@@ -59,12 +59,12 @@ class blobsPurge {
   private init() {
     if (!this.ssb.blobs?.ls || !this.ssb.blobs?.rm) {
       throw new Error(
-        '"ssb-blobs-purger" is missing required plugin "ssb-blobs"',
+        '"ssb-blobs-purge" is missing required plugin "ssb-blobs"',
       );
     }
     if (!this.ssb.backlinks?.read) {
       throw new Error(
-        '"ssb-blobs-purger" is missing required plugin "ssb-backlinks"',
+        '"ssb-blobs-purge" is missing required plugin "ssb-backlinks"',
       );
     }
   }
