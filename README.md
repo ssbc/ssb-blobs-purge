@@ -84,6 +84,25 @@ There are two ways you can set these parameters:
 ssb.blobsPurge.start({ cpuMax: 30, storageLimit: 2000000000 })
 ```
 
+## How does this work?
+
+For each blob, we calculate a heuristic:
+
+```
+heuristic = blobSizeInKb * ageInDays
+```
+
+Then, instead of sorting the blobs in descending heuristic order (that would be `O(n log n)`), we do at most 6 linear passes (hence `O(6 n) = O(n)`) over the blobs set:
+
+- On the first pass, we delete any blob whose heuristic number is greater than `1e7`
+- On the second pass, we delete any blob whose heuristic number is greater than `1e6`
+- On the third pass, we delete any blob whose heuristic number is greater than `1e5`
+- On the fourth pass, we delete any blob whose heuristic number is greater than `1e4`
+- On the fifth pass, we delete any blob whose heuristic number is greater than `1e3`
+- On the sixth pass, we delete any blob
+
+As soon as the `storageLimit` is met, we immediately cancel the current pass, and begin waiting for new blobs to be added. Once there are sufficiently new blobs, we resume the 6 passes.
+
 ## License
 
 MIT
