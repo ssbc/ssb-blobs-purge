@@ -103,6 +103,8 @@ Then, instead of sorting the blobs in descending heuristic order (that would be 
 
 As soon as the `storageLimit` is met, we immediately cancel the current pass, and begin waiting for new blobs to be added. Once there are sufficiently new blobs, we resume the 6 passes.
 
+There is one exception: blobs that your own account has mentioned in posts are considered "yours", and are never deleted.
+
 ## License
 
 MIT
