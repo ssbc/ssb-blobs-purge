@@ -78,7 +78,7 @@ There are two ways you can set these parameters:
  }
 ```
 
-**(2) When calling the `start` function**, note that this is **ignored** in case you supply (1) above:
+**(2) When calling the `start` function**, note that these numbers are **ignored** in case you supply (1) above:
 
 ```javascript
 ssb.blobsPurge.start({ cpuMax: 30, storageLimit: 2000000000 })
