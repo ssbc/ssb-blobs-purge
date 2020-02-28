@@ -136,12 +136,11 @@ class blobsPurge {
       drainGently(
         {ceiling: this.cpuMax, wait: 60},
         (done: boolean) => {
+          if (!done) return;
+
           debug('Paused the purge task');
           this.notifier({event: 'paused'});
-
-          // abort the above pull-stream pipeline when done
-          if (done) return false;
-          else return;
+          return false; // abort the above pull-stream pipeline
         },
         this.scheduleNextResume,
       ),
