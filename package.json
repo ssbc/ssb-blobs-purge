@@ -1,0 +1,39 @@
+{
+  "name": "ssb-blobs-purge",
+  "description": "SSB plugin to automatically remove old and large blobs",
+  "version": "0.1.0",
+  "homepage": "https://github.com/staltz/ssb-blobs-purge",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/staltz/ssb-blobs-purge.git"
+  },
+  "dependencies": {
+    "debug": "^4.1.1",
+    "pull-notify": "~0.1.1",
+    "secret-stack-decorators": "~1.0.0",
+    "ssb-ref": "^2.13.9",
+    "pull-stream": "^3.6.14",
+    "pull-drain-gently": "^1.0.1",
+    "promisify-tuple": "1.0.1",
+    "trammel": "~3.0.1",
+    "ssb-typescript": "~2.0.0"
+  },
+  "peerDependencies": {
+    "secret-stack": ">=6.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^13.7.0",
+    "ssb-server": "~15.2.0",
+    "tape": "^4.13.0",
+    "typescript": "3.8.x"
+  },
+  "scripts": {
+    "typescript": "tsc",
+    "tape": "set -e; for t in test/*.js; do node $t; done",
+    "test": "npm run typescript && npm run tape"
+  },
+  "author": "Andre Staltz <contact@staltz.com> (http://staltz.com)",
+  "license": "MIT"
+}
