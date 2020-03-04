@@ -2,7 +2,7 @@
 
 SSB plugin to automatically remove old and large blobs.
 
-Works by recursively traversing the blobs folder, and prioritizing deletes of blobs that are old (large creation timestamp) and large (large file size), or both. Does not delete blobs that your own feed posted (or mentioned first). Stops deletion once the `storageLimit` target is reached.
+Works by recursively traversing the blobs folder, and prioritizing deletes of blobs that are old (small creation timestamp) and big (large file size), or both. Does not delete blobs that your own feed posted (or mentioned first). Stops deletion once the `storageLimit` target is reached.
 
 **Note!** This deletion process creates a bias against old content, and this may not be the best choice for every SSB app. For instance, in some cases it may make sense to favor blobs in a particular hashtag ("channel") over other hashtags, regardless of how old or large they are. The choices in this module also favor blobs that were mentioned by the local `ssb.id` feed, and does not consider 'same as' accounts. The heuristic used to pick the next deletable blob also favors implementation performance, instead of picking the best possible deletable blob (see section at the bottom of this readme).
 
