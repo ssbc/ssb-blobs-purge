@@ -25,6 +25,7 @@ export type SSBConfig = {
   blobsPurge?: {
     cpuMax?: number;
     storageLimit?: number;
+    maxPause?: number;
   };
 };
 

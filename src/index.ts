@@ -31,6 +31,7 @@ function bytesToMB(x: number): number {
 }
 
 const DEFAULT_CPU_MAX = 50; // 50%
+const DEFAULT_MAX_PAUSE = 15e3; // 20 seconds
 const DEFAULT_STORAGE_LIMIT = 10e9; // 10 gigabytes
 
 interface Notifier {
@@ -46,6 +47,7 @@ class blobsPurge {
   private readonly notifier: Notifier;
   private task?: {abort: () => void};
   private cpuMax?: number;
+  private maxPause?: number;
   private storageLimit?: number;
 
   constructor(ssb: SSB, config: SSBConfig) {
@@ -77,7 +79,7 @@ class blobsPurge {
         index: 'DTA', // use asserted timestamps
       }),
       drainGently(
-        {ceiling: this.cpuMax, wait: 60},
+        {ceiling: this.cpuMax, wait: 60, maxPause: this.maxPause},
         (msg: Msg) => {
           if (msg.value.author === this.ssb.id) {
             isMine = true;
@@ -134,7 +136,7 @@ class blobsPurge {
       pull.flatten(),
       pull.asyncMap(this.maybeDelete),
       drainGently(
-        {ceiling: this.cpuMax, wait: 60},
+        {ceiling: this.cpuMax, wait: 60, maxPause: this.maxPause},
         (done: boolean) => {
           if (!done) return;
 
@@ -200,6 +202,8 @@ class blobsPurge {
       DEFAULT_STORAGE_LIMIT;
     this.cpuMax =
       this.config.blobsPurge?.cpuMax ?? opts?.cpuMax ?? DEFAULT_CPU_MAX;
+    this.maxPause =
+      this.config.blobsPurge?.maxPause ?? opts?.maxPause ?? DEFAULT_MAX_PAUSE;
 
     this.task?.abort();
     this.task = void 0;
