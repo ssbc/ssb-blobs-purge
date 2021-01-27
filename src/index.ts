@@ -64,29 +64,41 @@ class blobsPurge {
         '"ssb-blobs-purge" is missing required plugin "ssb-blobs"',
       );
     }
-    if (!this.ssb.backlinks?.read) {
+    if (!this.ssb.db?.query && !this.ssb.backlinks?.read) {
       throw new Error(
-        '"ssb-blobs-purge" is missing required plugin "ssb-backlinks"',
+        '"ssb-blobs-purge" is missing required "ssb-db2" OR "ssb-backlinks"',
       );
+    }
+    if (this.ssb.db?.query && !this.ssb.db.operators.fullMentions) {
+      throw new Error(
+        '"ssb-blobs-purge" is missing required "ssb-db2/full-mentions" plugin',
+      );
+    }
+  }
+
+  private mentionsBlob(blobId: BlobId) {
+    if (this.ssb.db?.query) {
+      const {and, fullMentions, toPullStream} = this.ssb.db.operators;
+      return this.ssb.db.query(and(fullMentions!(blobId)), toPullStream());
+    } else {
+      return this.ssb.backlinks!.read({
+        query: [{$filter: {dest: blobId}}],
+        index: 'DTA', // use asserted timestamps
+      });
     }
   }
 
   private isMyBlob = (blobId: BlobId, cb: Callback<boolean>) => {
     let isMine = false;
     pull(
-      this.ssb.backlinks!.read({
-        query: [{$filter: {dest: blobId}}],
-        index: 'DTA', // use asserted timestamps
-      }),
+      this.mentionsBlob(blobId),
       drainGently(
         {ceiling: this.cpuMax, wait: 60, maxPause: this.maxPause},
         (msg: Msg) => {
           if (msg.value.author === this.ssb.id) {
             isMine = true;
             return false; // abort this drainGently
-          } else {
-            return;
-          }
+          } else return;
         },
         () => {
           cb(null, isMine);
