@@ -18,6 +18,15 @@ export type SSB = {
   backlinks?: {
     read: CallableFunction;
   };
+  db?: {
+    query: CallableFunction;
+    operators: {
+      toPullStream: CallableFunction;
+      and: CallableFunction;
+      author: CallableFunction;
+      fullMentions?: CallableFunction;
+    };
+  };
 };
 
 export type SSBConfig = {

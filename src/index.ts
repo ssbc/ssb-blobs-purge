@@ -64,35 +64,63 @@ class blobsPurge {
         '"ssb-blobs-purge" is missing required plugin "ssb-blobs"',
       );
     }
-    if (!this.ssb.backlinks?.read) {
+    if (!this.ssb.db?.query && !this.ssb.backlinks?.read) {
       throw new Error(
-        '"ssb-blobs-purge" is missing required plugin "ssb-backlinks"',
+        '"ssb-blobs-purge" is missing required "ssb-db2" OR "ssb-backlinks"',
+      );
+    }
+    if (this.ssb.db?.query && !this.ssb.db.operators.fullMentions) {
+      throw new Error(
+        '"ssb-blobs-purge" is missing required "ssb-db2/full-mentions" plugin',
       );
     }
   }
 
   private isMyBlob = (blobId: BlobId, cb: Callback<boolean>) => {
+    const wait = 60;
+    const ceiling = this.cpuMax;
+    const maxPause = this.maxPause;
+
     let isMine = false;
-    pull(
-      this.ssb.backlinks!.read({
-        query: [{$filter: {dest: blobId}}],
-        index: 'DTA', // use asserted timestamps
-      }),
-      drainGently(
-        {ceiling: this.cpuMax, wait: 60, maxPause: this.maxPause},
-        (msg: Msg) => {
-          if (msg.value.author === this.ssb.id) {
+
+    if (this.ssb.db?.query) {
+      const {and, fullMentions, author, toPullStream} = this.ssb.db.operators;
+      pull(
+        this.ssb.db.query(
+          and(fullMentions!(blobId), author(this.ssb.id)),
+          toPullStream(),
+        ),
+        drainGently(
+          {wait, ceiling, maxPause},
+          (_: Msg) => {
             isMine = true;
             return false; // abort this drainGently
-          } else {
-            return;
-          }
-        },
-        () => {
-          cb(null, isMine);
-        },
-      ),
-    );
+          },
+          () => {
+            cb(null, isMine);
+          },
+        ),
+      );
+    } else {
+      pull(
+        this.ssb.backlinks!.read({
+          query: [{$filter: {dest: blobId}}],
+          index: 'DTA', // use asserted timestamps
+        }),
+        drainGently(
+          {wait, ceiling, maxPause},
+          (msg: Msg) => {
+            if (msg.value.author === this.ssb.id) {
+              isMine = true;
+              return false; // abort this drainGently
+            } else return;
+          },
+          () => {
+            cb(null, isMine);
+          },
+        ),
+      );
+    }
   };
 
   private resume = async () => {

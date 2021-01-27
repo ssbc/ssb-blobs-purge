@@ -13,7 +13,9 @@ Works by recursively traversing the blobs folder, and prioritizing deletes of bl
 - **Node.js 6.5** or higher
 - `secret-stack@^6.2.0`
 - `ssb-blobs` installed
-- `ssb-backlinks` installed
+- Either of these two (preferably not both!):
+  - `ssb-db2` (plus `ssb-db2/full-mentions`) installed
+  - `ssb-backlinks` installed
 
 ```
 npm install --save ssb-blobs-purge
@@ -28,9 +30,10 @@ Add this plugin to ssb-server like this:
      .use(require('ssb-no-auth'))
      .use(require('ssb-plugins'))
      .use(require('ssb-master'))
+     .use(require('ssb-db2'))
+     .use(require('ssb-db2/full-mentions'))
      .use(require('ssb-conn'))
      .use(require('ssb-blobs'))
-     .use(require('ssb-backlinks'))
 +    .use(require('ssb-blobs-purge'))
      .use(require('ssb-replicate'))
      .use(require('ssb-friends'))
