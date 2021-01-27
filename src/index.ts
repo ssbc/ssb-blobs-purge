@@ -76,51 +76,35 @@ class blobsPurge {
     }
   }
 
-  private isMyBlob = (blobId: BlobId, cb: Callback<boolean>) => {
-    const wait = 60;
-    const ceiling = this.cpuMax;
-    const maxPause = this.maxPause;
-
-    let isMine = false;
-
+  private mentionsBlob(blobId: BlobId) {
     if (this.ssb.db?.query) {
-      const {and, fullMentions, author, toPullStream} = this.ssb.db.operators;
-      pull(
-        this.ssb.db.query(
-          and(fullMentions!(blobId), author(this.ssb.id)),
-          toPullStream(),
-        ),
-        drainGently(
-          {wait, ceiling, maxPause},
-          (_: Msg) => {
+      const {and, fullMentions, toPullStream} = this.ssb.db.operators;
+      return this.ssb.db.query(and(fullMentions!(blobId)), toPullStream());
+    } else {
+      return this.ssb.backlinks!.read({
+        query: [{$filter: {dest: blobId}}],
+        index: 'DTA', // use asserted timestamps
+      });
+    }
+  }
+
+  private isMyBlob = (blobId: BlobId, cb: Callback<boolean>) => {
+    let isMine = false;
+    pull(
+      this.mentionsBlob(blobId),
+      drainGently(
+        {ceiling: this.cpuMax, wait: 60, maxPause: this.maxPause},
+        (msg: Msg) => {
+          if (msg.value.author === this.ssb.id) {
             isMine = true;
             return false; // abort this drainGently
-          },
-          () => {
-            cb(null, isMine);
-          },
-        ),
-      );
-    } else {
-      pull(
-        this.ssb.backlinks!.read({
-          query: [{$filter: {dest: blobId}}],
-          index: 'DTA', // use asserted timestamps
-        }),
-        drainGently(
-          {wait, ceiling, maxPause},
-          (msg: Msg) => {
-            if (msg.value.author === this.ssb.id) {
-              isMine = true;
-              return false; // abort this drainGently
-            } else return;
-          },
-          () => {
-            cb(null, isMine);
-          },
-        ),
-      );
-    }
+          } else return;
+        },
+        () => {
+          cb(null, isMine);
+        },
+      ),
+    );
   };
 
   private resume = async () => {
