@@ -10,24 +10,24 @@
     "url": "git://github.com/staltz/ssb-blobs-purge.git"
   },
   "dependencies": {
-    "debug": "^4.1.1",
+    "debug": "^4.3.1",
     "promisify-tuple": "1.0.1",
     "pull-drain-gently": "~1.1.0",
     "pull-notify": "~0.1.1",
     "pull-stream": "^3.6.14",
-    "secret-stack-decorators": "~1.0.0",
-    "ssb-ref": "^2.13.9",
-    "ssb-typescript": "~2.0.0",
-    "trammel": "~3.0.1"
+    "secret-stack-decorators": "~1.1.0",
+    "ssb-ref": "^2.14.3",
+    "ssb-typescript": "~2.2.0",
+    "trammel": "~4.0.0"
   },
   "peerDependencies": {
     "secret-stack": ">=6.2.0"
   },
   "devDependencies": {
     "@types/node": "^13.7.0",
-    "ssb-server": "~15.2.0",
+    "ssb-server": "~15.3.0",
     "tape": "^4.13.0",
-    "typescript": "3.8.x"
+    "typescript": "4.1.x"
   },
   "scripts": {
     "typescript": "tsc",
