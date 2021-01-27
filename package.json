@@ -1,7 +1,7 @@
 {
   "name": "ssb-blobs-purge",
   "description": "SSB plugin to automatically remove old and large blobs",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "homepage": "https://github.com/staltz/ssb-blobs-purge",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
