@@ -26,8 +26,8 @@
   "devDependencies": {
     "@types/node": "^13.7.0",
     "ssb-server": "~15.3.0",
-    "tape": "^4.13.0",
-    "typescript": "4.1.x"
+    "tape": "^5.2.0",
+    "typescript": "4.2.x"
   },
   "scripts": {
     "typescript": "tsc",
