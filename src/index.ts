@@ -78,8 +78,8 @@ class blobsPurge {
 
   private mentionsBlob(blobId: BlobId) {
     if (this.ssb.db?.query) {
-      const {and, fullMentions, toPullStream} = this.ssb.db.operators;
-      return this.ssb.db.query(and(fullMentions!(blobId)), toPullStream());
+      const {where, fullMentions, toPullStream} = this.ssb.db.operators;
+      return this.ssb.db.query(where(fullMentions!(blobId)), toPullStream());
     } else {
       return this.ssb.backlinks!.read({
         query: [{$filter: {dest: blobId}}],

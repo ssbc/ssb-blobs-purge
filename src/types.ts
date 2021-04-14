@@ -22,7 +22,7 @@ export type SSB = {
     query: CallableFunction;
     operators: {
       toPullStream: CallableFunction;
-      and: CallableFunction;
+      where: CallableFunction;
       author: CallableFunction;
       fullMentions?: CallableFunction;
     };
