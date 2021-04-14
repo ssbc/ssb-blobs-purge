@@ -24,10 +24,10 @@
     "secret-stack": ">=6.2.0"
   },
   "devDependencies": {
-    "@types/node": "^13.7.0",
+    "@types/node": "^14.14.37",
     "ssb-server": "~15.3.0",
-    "tape": "^5.2.0",
-    "typescript": "4.2.x"
+    "tape": "^5.2.2",
+    "typescript": "~4.2.4"
   },
   "scripts": {
     "typescript": "tsc",
