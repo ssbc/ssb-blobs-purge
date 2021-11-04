@@ -5,6 +5,9 @@
   "homepage": "https://github.com/staltz/ssb-blobs-purge",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "files": [
+    "lib/*"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/staltz/ssb-blobs-purge.git"
